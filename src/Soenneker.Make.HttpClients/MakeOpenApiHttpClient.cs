@@ -17,7 +17,7 @@ namespace Soenneker.Make.HttpClients;
 public sealed class MakeOpenApiHttpClient : IMakeOpenApiHttpClient
 {
     private readonly IHttpClientCache _httpClientCache;
-    private readonly string _apiKey;
+    private readonly IConfiguration _configuration;
     private readonly string _baseUrl;
     private readonly string _authHeaderName;
     private readonly string _authHeaderValueTemplate;
@@ -28,7 +28,7 @@ public sealed class MakeOpenApiHttpClient : IMakeOpenApiHttpClient
     public MakeOpenApiHttpClient(IHttpClientCache httpClientCache, IConfiguration config)
     {
         _httpClientCache = httpClientCache;
-        _apiKey = config.GetValueStrict<string>("Make:ApiKey");
+        _configuration = config;
         _baseUrl = config["Make:ClientBaseUrl"] ?? _prodBaseUrl;
         _authHeaderName = config["Make:AuthHeaderName"] ?? "Authorization";
         _authHeaderValueTemplate = config["Make:AuthHeaderValueTemplate"] ?? "Bearer {token}";
@@ -36,7 +36,7 @@ public sealed class MakeOpenApiHttpClient : IMakeOpenApiHttpClient
 
     public ValueTask<HttpClient> Get(CancellationToken cancellationToken = default)
     {
-        return Get(_apiKey, _baseUrl, cancellationToken);
+        return Get(_configuration.GetValueStrict<string>("Make:ApiKey"), _baseUrl, cancellationToken);
     }
 
     public ValueTask<HttpClient> Get(string apiKey, CancellationToken cancellationToken = default)
