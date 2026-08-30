@@ -13,7 +13,6 @@ using Soenneker.Utils.HttpClientCache.Abstract;
 
 namespace Soenneker.Make.HttpClients;
 
-/// <inheritdoc cref="IMakeOpenApiHttpClient"/>
 public sealed class MakeOpenApiHttpClient : IMakeOpenApiHttpClient
 {
     private readonly IHttpClientCache _httpClientCache;
