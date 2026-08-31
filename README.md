@@ -45,22 +45,9 @@ response.EnsureSuccessStatusCode();
 
 Use `Get(apiKey)` to select credentials per call, or `Get(apiKey, baseUrl)` for a different Make region. The same credential, base URL, and authentication configuration reuse the same cached client.
 
-## What you get
-
-- `IMakeOpenApiHttpClient` — A .NET thread-safe singleton HttpClient for.
-- `MakeOpenApiHttpClientRegistrar` — Registers the OpenAPI HttpClient wrapper for dependency injection.
-
-## API at a glance
-
-| API | What it does | Result / important behavior |
-| --- | --- | --- |
-| `IMakeOpenApiHttpClient.Get(apiKey, cancellationToken)` | Gets a client for a specific API key using the configured base URL. | A task whose result is the requested http Client. |
-| `IMakeOpenApiHttpClient.Get(apiKey, baseUrl, cancellationToken)` | Gets a client for a specific Make connection. | A task whose result is the requested http Client. |
-| `MakeOpenApiHttpClientRegistrar.AddMakeOpenApiHttpClientAsSingleton(services)` | Adds `MakeOpenApiHttpClient` as a singleton service. | The same service collection, so additional registrations can be chained. |
-| `MakeOpenApiHttpClientRegistrar.AddMakeOpenApiHttpClientAsScoped(services)` | Adds `MakeOpenApiHttpClient` as a scoped service. | The same service collection, so additional registrations can be chained. |
-
-## Practical notes
+## Client reuse
 
 - Do not dispose a returned `HttpClient`; its lifetime is owned by the registered wrapper/cache.
+- Calls using the same API key, base URL, header name, and header template reuse one client.
 - Singleton registration shares cached clients application-wide. Scoped registration owns a scoped cache and removes its clients when the scope ends.
 - `Make:AuthHeaderName` and `Make:AuthHeaderValueTemplate` can override authentication for a compatible gateway. The template must contain `{token}` if the key should be sent.
